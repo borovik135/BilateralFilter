@@ -1,0 +1,91 @@
+/**
+\mainpage Project "Bilateral Filter" documentation
+
+\author Julie Digne julie.digne@liris.cnrs.fr
+\version 1.0
+
+\section intro_sec Introduction
+This software applies a denoising filter, called the bilateral filter, to a set of oriented or non-oriented 3D points given by their coordinates and oriented normals, if any.
+It is an implementation of the Bilateral Filter described in [Fleischman et al. 2003], adapted to point clouds.<BR>
+
+\section tools_subsec Dependencies:
+This program needs only the Standard Template Library (g++4.7.3 or higher) and is parallelized using OpenMP (version 3.1 or higher). 
+
+\section install_sec Installation
+1 - unzip the archive <BR>
+2 - cd BilateralFilter<BR>
+4 - mkdir build <BR>
+5 - cd build <BR>
+6 - cmake -DCMAKE_BUILD_TYPE=Release ..<BR>
+7 - make <BR>
+<BR>
+Note on the compilers:<BR>
+The program was compiled both with g++4.4 and 4.7 on debian and ubuntu and 
+g++4.8 and 4.2 on MacOSX 10.6.8.
+
+
+\section usage Usage
+A typical usage for this program is <BR>
+
+bilateralfilter INPUT OUTPUT -r \<radius\>  -n \<Normal radius\>-N \<Niter\> -p 
+<BR>
+
+where: <BR>
+ ** \b INPUT (mandatory) file containing the oriented or non-oriented points. It should be formatted as a simple ascii file, with one point per line separated by tabulations <BR>
+Oriented points example:<BR>
+ x1	y1	z1	nx1	ny1	nz1 <BR>
+ x2	y2	z2	nx2	ny2	nz2 <BR>
+ .... <BR>
+ xn	yn	zn	nxn	nyn	nzn <BR>
+Non-oriented points example:  <BR>
+ x1	y1	z1<BR>
+ x2	y2	z2<BR>
+ .... <BR>
+ xn	yn	zn<BR>
+<BR>
+\b OUTPUT (mandatory) output file<BR>
+<BR>
+    <b>-r</b> (recommended) neighborhood radius, will be translated into a distance weight.<BR>
+    <BR>
+    <b>-n</b>     (recommended) normal neighborhood radius, will be translated into a normal distance weight.<BR>
+    <BR>
+    <b>-N</b>    Number of filter iterations (default: 1).<BR>
+    <BR>
+    <b>-p</b>    (recommended) will perform the computation in parallel.<BR>
+    <BR>
+    <b>-R</b>    use this option if the point cloud is oriented
+
+\section example Provided example
+An example of the algorithm input/output is given in the "sample" directory.<BR>
+The input file is named "sphere_noisy_oriented.txt"<BR>
+Running:<BR>
+bilateralfilter sphere_noisy_oriented.txt sphere_denoised.txt -R -r 0.04 -n 0.04 -N 1
+<BR>
+produced the following file: sphere_denoised.txt
+<BR>
+
+
+\section note Note on the input file format
+
+This filter can be used with points with other properties than a normal (e.g. color, confidence value... any type of scalar field applied to the point).<BR>
+The file format is always the same an ascii file with a line per point, each line should start with the x,y,z coordinates, then the normal coordinates nx,ny,nz (if normal information is given) then the scalar values always separated by a tabulation.<BR>
+The only constraint is that each point should have the exact same number of properties attached (ie: all lines should have the same length)<BR>
+The properties will be attached to each point and each filtered point will keep the same properties as the corresponding input point.<BR>
+If the <b>-R</b> option is used then the 3 values after the x,y,z coordinates will be interpreted as an oriented normal, and the output points will all have filtered oriented normals.<BR>
+
+
+\section copyright Copyright
+  
+  This program is free software: you can redistribute it and/or
+  modify it under the terms of the GNU General Public License as published 
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.<BR>
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.<BR>
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+<BR><BR>
+
+ */

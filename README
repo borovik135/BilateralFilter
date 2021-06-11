@@ -1,0 +1,92 @@
+BilateralFilter  README File
+
+JulieDigne julie.digne@liris.cnrs.fr
+version 1.0
+
+**INTRODUCTION
+This software applies a denoising filter, called the bilateral filter, to a set of oriented or non-oriented 3D points given by their coordinates and oriented normals, if any.
+It is an implementation of the Bilateral Filter described in [Fleischman et al. 2003] adapted to point clouds.
+
+**DEPENDENCIES
+This program requires only the Standard Template Library (g++4.7.3 or higher) and is parallelized using OpenMP (version 3.1 or higher).
+
+**INSTALLATION
+1- unzip the archive
+2- cd BilateralFilter
+4- mkdir build
+5- cd build
+6- cmake -DCMAKE_BUILD_TYPE=Release ..
+7- make
+
+Note on compilers:
+The program was compiled with g++4.9 on ubuntu 14.04
+
+USAGE
+A typical usage for this program is
+
+bilateralfilterINPUT OUTPUT -r \<radius\>  -n \<Normal radius\>-N \<Niter\> -p
+
+
+where:
+** \b INPUT (mandatory) file containing the oriented or non-oriented points. It should be formatted as a simple ascii file, with one point per line separated by tabulations
+Orientedpoints example:
+x1	y1	z1	nx1	ny1	nz1
+x2	y2	z2	nx2	ny2	nz2
+....
+xn	yn	zn	nxn	nyn	nzn
+Non-orientedpoints example:
+x1	y1	z1
+x2	y2	z2
+....
+xn	yn	zn
+
+\b OUTPUT (mandatory) output file
+
+   <b>-r</b> (recommended) neighborhood radius, will be translated into a distance weight.
+
+   <b>-n</b>     (recommended) normal neighborhood radius, will be translated into a normal distance weight.
+
+   <b>-N</b>    Number of filter iterations (default: 1).
+
+   <b>-p</b>    (recommended) will perform the computation in parallel.
+
+   <b>-R</b>    use this option if the point cloud is oriented
+
+**PROVIDED EXAMPLE
+An example of the algorithm input/output is given in the "sample" directory.
+The input file is named "sphere_noisy_oriented.txt"
+Running:
+bilateralfiltersphere_noisy_oriented.txt sphere_denoised.txt -R -r 0.04 -n 0.04 -N 1
+
+produced the following file: sphere_denoised.txt
+
+
+**ADDITIONAL SCRIPT
+An additional script for adding gaussian noise to shapes is added in folder 'scripts': addnoise.py. It is run using the following command line
+
+addnoise.py -i INPUT -o OUTPUT -v <noise variance>
+
+where the noise variance is expressed as a percentage of the shape diagonal.
+
+**NOTE ON THE INPUT FILE FORMAT
+
+This filter can be used with points with other properties than a normal (e.g. color, confidence value... any type of scalar field applied to the point).
+The file format is always the same an ascii file with a line per point, each line should start with the x,y,z coordinates, then the normal coordinates nx,ny,nz (if normal information is given) then the scalar values always separated by a tabulation.
+The only constraint is that each point should have the exact same number of properties attached (ie: all lines should have the same length)
+The properties will be attached to each point and each filtered point will keep the same properties as the corresponding input point.
+If the <b>-R</b> option is used then the 3 values after the x,y,z coordinates will be interpreted as an oriented normal, and the output points will all have filtered oriented normals.
+
+
+**COPYRIGHT
+
+ This program is free software: you can redistribute it and/or
+ modify it under the terms of the GNU General Public License as published
+ by the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
